@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CLOSED CIRCUIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+
+    <!-- ============ TITLE ============ -->
+    <div id="titleScreen">
+      <canvas id="titleNoise" width="640" height="360"></canvas>
+      <div class="titleInner">
+        <div class="titleBrand">ARGUS SECURITY &mdash; overnight watch</div>
+        <h1>CLOSED CIRCUIT</h1>
+        <p class="titleTag">watch the feeds. log what's wrong. follow the post orders.</p>
+        <button id="clockIn">[ CLOCK IN ]</button>
+        <p class="titleMeta">headphones recommended &middot; one shift &asymp; 9 minutes &middot; mouse or keyboard</p>
+        <p class="titleMeta dim">guard_id MW-0612 &middot; post 2841 &middot; terminal build 2.3.1</p>
+      </div>
+    </div>
+
+    <!-- ============ CONSOLE ============ -->
+    <div id="console" class="hidden">
+      <header id="topbar">
+        <div class="brand">ARGUS CCTV <span class="dim">v2.3.1</span></div>
+        <div id="clock">11:58 PM</div>
+        <div id="integrityWrap">
+          <span class="hudLabel">LOG INTEGRITY</span>
+          <div id="integrityBar"><div id="integrityFill"></div></div>
+          <span id="integrityPct">100%</span>
+        </div>
+        <div id="rateLimit" class="hidden">RATE LIMITED <span id="rateLimitT"></span></div>
+        <button id="muteBtn" title="mute (M)">SND ON</button>
+      </header>
+
+      <div id="cols">
+        <aside id="sidebar">
+          <div class="sideHead">CAMERA LIST <span id="queueCount" class="dim"></span></div>
+          <ul id="queueList"></ul>
+          <div id="modcamDock">
+            <canvas id="modcam" width="320" height="180"></canvas>
+            <div class="modcamLabel"><span class="recDot"></span> DESK CAM &mdash; REQUIRED (&sect;4)</div>
+          </div>
+        </aside>
+
+        <main id="viewer">
+          <div id="feedWrap">
+            <canvas id="feed" width="640" height="360"></canvas>
+            <div id="feedOverlay">
+              <div class="ovTop">
+                <span class="ovRec"><span class="recDot"></span> LIVE</span>
+                <span id="ovId">strm_0000</span>
+                <span id="ovUp" class="dim">UP 00:00:00</span>
+              </div>
+              <div class="ovBot">
+                <span id="ovChan" class="dim">CH 1</span>
+                <span id="ovBitrate" class="dim">412 kbps</span>
+              </div>
+            </div>
+            <div id="offlineCard" class="hidden">
+              <div>SOURCE OFFLINE</div>
+              <div class="dim small">the device stopped responding</div>
+            </div>
+          </div>
+          <div id="actions">
+            <button id="flagBtn"><svg class="flagIco" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 8h6M5 5h6M5 11h4" stroke="#0a0c10" stroke-width="1.4" fill="none"/></svg> LOG INCIDENT <span class="key">F</span></button>
+            <button id="logBtn">SHIFT LOG <span class="key">L</span></button>
+            <button id="rulebookBtn">POST ORDERS <span class="key">R</span></button>
+            <span id="navHint" class="dim">&larr; / &rarr; cameras &middot; 1&ndash;7 jump &middot; 0 desk cam &middot; click to enlarge</span>
+          </div>
+        </main>
+      </div>
+
+      <footer id="statusbar">
+        <span>guard_id MW-0612</span>
+        <span id="sbShift">post 2841 &middot; 00:00 &rarr; 06:00</span>
+        <span class="dim">uplink stable &middot; region us-night-4</span>
+      </footer>
+    </div>
+
+    <!-- ============ FLAG PANEL ============ -->
+    <div id="flagPanel" class="modal hidden">
+      <div class="modalBox">
+        <div class="modalHead">LOG INCIDENT &mdash; <span id="flagStreamName"></span></div>
+        <div class="modalSub dim">select incident type &middot; entries log on submit &middot; ESC to cancel</div>
+        <div id="flagGrid"></div>
+        <button class="modalCancel" id="flagCancel">CANCEL [ESC]</button>
+      </div>
+    </div>
+
+    <!-- ============ RULEBOOK ============ -->
+    <div id="rulebook" class="modal hidden">
+      <div class="modalBox rulebookBox">
+        <div class="modalHead">ARGUS SECURITY &mdash; OVERNIGHT POST ORDERS <span class="dim">v2.3</span></div>
+        <div class="rules">
+          <p><b>&sect;0</b> Establish baselines. Review every assigned camera at the start of your watch. <i>You</i> are the reference.</p>
+          <p><b>&sect;1</b> Log an incident for the camera you are viewing. Select the correct incident type. Entries log on submit.</p>
+          <p><b>&sect;2</b> False entries are rate-limited. Repeat offenses extend the rate limit.</p>
+          <p><b>&sect;3</b> Undocumented events degrade your log integrity. At zero, your post is pulled. Documented events do not degrade it. <i>Nothing further is promised.</i></p>
+          <p><b>&sect;4</b> Your desk cam must remain active for the duration. Do not leave your post.</p>
+          <p><b>&sect;5</b> Cameras may not be logged for events outside their coverage.</p>
+        </div>
+        <div class="rulesControls dim">&larr;/&rarr; or 1&ndash;7 switch cameras &middot; F log incident &middot; L shift log &middot; R post orders &middot; M mute</div>
+        <button class="modalCancel" id="rulebookClose">RETURN TO QUEUE [ESC]</button>
+      </div>
+    </div>
+
+    <!-- ============ SHIFT LOG ============ -->
+    <div id="shiftLog" class="modal hidden">
+      <div class="modalBox logBox">
+        <div class="modalHead">SHIFT LOG &mdash; 2841 <span class="dim">entries are permanent</span></div>
+        <div class="modalSub dim">what you have documented so far. none of it has been repaired. that is not what entries are for.</div>
+        <div id="shiftLogList"></div>
+        <button class="modalCancel" id="shiftLogClose">RETURN TO QUEUE [ESC]</button>
+      </div>
+    </div>
+
+    <!-- ============ TOASTS ============ -->
+    <div id="toasts"></div>
+
+    <!-- ============ ENDING ============ -->
+    <div id="endScreen" class="hidden">
+      <div id="endInner">
+        <h2 id="endTitle"></h2>
+        <div id="endBody"></div>
+        <div id="endStats"></div>
+        <button id="restartBtn">[ START NEW SHIFT ]</button>
+      </div>
+    </div>
+
+    <!-- ============ PAUSE VEIL ============ -->
+    <div id="pauseVeil" class="hidden"><div>RECONNECTING&hellip;<br><span class="dim small">feed paused while window inactive</span></div></div>
+
+  </div>
+</div>
+
+<script src="js/util.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/paint.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/director.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

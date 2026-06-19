@@ -1,0 +1,11 @@
+# dev scratch — canvas captures from the visual-review pipeline
+_caps/
+
+# build artifacts (zip the game/ folder when shipping; attach to a Release or itch)
+*.zip
+
+# local tooling / editor
+.claude/
+node_modules/
+.DS_Store
+Thumbs.db
